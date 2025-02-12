@@ -1,43 +1,74 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthService{
-  //initialise firebase authentication
-  final FirebaseAuth _auth =FirebaseAuth.instance;
-  final FirebaseFirestore _firestore=FirebaseFirestore.instance;
-  //ger user account
-  User? getUser(){
+class AuthService {
+  // Initialize Firebase authentication
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Get the currently signed-in user
+  User? getUser() {
     return _auth.currentUser;
   }
-  //sign in
-  Future<UserCredential> signInWithEmailPassword(String email,password)async{
-    try{
-      UserCredential userCredential= await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+  // Send email verification link
+  Future<void> sendEmailVerificationLink() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      } else {
+        print("No user is signed in or email is already verified.");
+      }
+    } catch (e) {
+      print("Error sending email verification: ${e.toString()}");
+    }
+  }
+
+  // Sign in with email and password
+  Future<UserCredential> signInWithEmailPassword(String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       return userCredential;
-    }on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
 
-  //sign up
-  Future signUpWithEmailPassword(String email,password)async{
-    try{
-       UserCredential userCredential=await _auth.createUserWithEmailAndPassword(email: email, password: password);
-       // Create user doc and add to firestore
-       _firestore.collection("users").doc(userCredential.user!.email)
-           .set({'E-mail': userCredential.user!.email});
-        return userCredential;
+  static User? get user => _auth.currentUser;
+  static bool get isEmailVerified => _auth.currentUser?.emailVerified ?? false;
 
+  // Sign up with email and password
+  Future<UserCredential> signUpWithEmailPassword(String name, String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
+      // Update display name
+      await userCredential.user?.updateDisplayName(name);
 
-    }on FirebaseAuthException catch(e){
+      // Create user doc in Firestore
+      await _firestore.collection("users").doc(userCredential.user?.email).set({
+        'E-mail': userCredential.user?.email,
+        'Name': name,
+        'Uid': userCredential.user?.uid,
+      });
+
+      // Send verification email
+      await sendEmailVerificationLink();
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.code);
     }
   }
 
-  //sign out
-  Future<void> signOut()async{
-   return await _auth.signOut();
+  // Sign out
+  Future<void> signOut() async {
+    return await _auth.signOut();
   }
 }
-

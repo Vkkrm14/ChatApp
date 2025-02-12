@@ -1,5 +1,7 @@
+
 // ignore_for_file: prefer_const_constructors
 
+import 'package:chat_app/pages/group/group_chat_page.dart';
 import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/services/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,9 +72,13 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context)=>ChatPage(
                           recieverEmail:user['E-mail'] ,
-                          //recieverID: user['uid'],
+                          recieverName: user['Name'],
+                          
                         )));
-                  }, text: user['E-mail']);
+                  },
+                    icon: Icons.person,
+                    text: user['Name'],
+                    text2: user['E-mail'],);
                 }
                 else{
                   return Container();
@@ -80,10 +86,15 @@ class _HomePageState extends State<HomePage> {
 
 
               }
-              );
+          );
         },
       ),
-
+    floatingActionButton: FloatingActionButton(onPressed: (){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GroupPage()));
+    },child: Icon(Icons.group),),
     );
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 class UserTile extends StatelessWidget {
   final String text;
+  final String text2;
+  final IconData icon ;
   void Function()? onTap;
-   UserTile({super.key,required this.onTap,required this.text});
+  UserTile({super.key,required this.onTap,required this.icon,required this.text,required this.text2});
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +16,28 @@ class UserTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.background,
           borderRadius: BorderRadius.circular(12),),
-            child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Icon(Icons.person,color:Theme.of(context).colorScheme.inversePrimary ,),
+                Icon(icon,color:Theme.of(context).colorScheme.inversePrimary ,),
                 SizedBox(width: 20,),
-                Text(text,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
+                Text(text,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary,fontWeight: FontWeight.bold,fontSize: 20),),
               ],
 
-      ),
+
+            ),
+            //SizedBox(height: 2,),
+            Padding(
+              padding: const EdgeInsets.only(left: 42),
+              child: Text(text2,style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
+            ),
+
+          ],
         ),
-      );
+      ),
+    );
 
   }
 }

@@ -1,8 +1,8 @@
 
 
 import 'package:chat_app/firebase_options.dart';
-import 'package:chat_app/pages/LogOrReg_page.dart';
-import 'package:chat_app/pages/login_page.dart';
+import 'package:chat_app/authentication/LogOrReg_page.dart';
+import 'package:chat_app/authentication/login_page.dart';
 import 'package:chat_app/services/auth_gate.dart';
 import 'package:chat_app/themes/light_mode.dart';
 import 'package:chat_app/themes/theme_provider.dart';
