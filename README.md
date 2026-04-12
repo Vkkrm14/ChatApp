@@ -15,11 +15,6 @@ A real-time Flutter chat application powered by Firebase. Supports one-on-one me
 
 ---
 
-## Screenshots
-
-> Add screenshots of your app here.
-
----
 
 ## Tech Stack
 
